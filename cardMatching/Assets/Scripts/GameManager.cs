@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -56,7 +57,7 @@ public class GameManager : MonoBehaviour
         time += Time.deltaTime;
         timeText.text = time.ToString("N2");
 
-        if (time > 3f)
+        if (time > 30.0f)
         {
             endText.SetActive(true);
             Time.timeScale = 0.0f;
@@ -96,7 +97,8 @@ public class GameManager : MonoBehaviour
 
     public void ReGame()
     {
-        SceneManager.LoadScene("MainScene");
+        // SceneManager.LoadScene("MainScene");
+        AdsManager.Instance.ShowRewardAd();
     }
 
 }
