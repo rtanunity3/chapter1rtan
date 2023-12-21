@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
 
     public AudioSource audioSource;
     public AudioClip match;
+    public AudioClip correct;
+    public AudioClip incorrect;
 
     float time;
 
@@ -26,6 +28,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
     }
+
 
     void Start()
     {
@@ -64,8 +67,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
     public void IsMatched()
     {
         string firstCardImage = firstCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
@@ -73,10 +74,17 @@ public class GameManager : MonoBehaviour
 
         if (firstCardImage == secondCardImage)
         {
-            audioSource.PlayOneShot(match);
+            //audioSource.PlayOneShot(match);
+            audioSource.PlayOneShot(correct);
 
             firstCard.GetComponent<Card>().DestroyCard();
             secondCard.GetComponent<Card>().DestroyCard();
+
+            Card[] leftCards = GameObject.Find("Cards").transform.GetComponentsInChildren<Card>();
+            foreach (Card card in leftCards)
+            {
+                card.transform.Find("Back").GetComponent<SpriteRenderer>().color = Color.white;
+            }
 
             int cardsLeft = GameObject.Find("Cards").transform.childCount;
             if (cardsLeft == 2)
@@ -87,6 +95,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            audioSource.PlayOneShot(incorrect);
             firstCard.GetComponent<Card>().CloseCard();
             secondCard.GetComponent<Card>().CloseCard();
         }

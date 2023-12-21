@@ -693,6 +693,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1688208144}
   bgMusic: {fileID: 8300000, guid: ac5c2ea2832dfeb4e869ead41d06a283, type: 3}
+  startsound: {fileID: 8300000, guid: 114e57a2e2f239b46b5b46c12a2c0b90, type: 3}
 --- !u!4 &1688208146
 Transform:
   m_ObjectHideFlags: 0
@@ -810,6 +811,8 @@ MonoBehaviour:
   secondCard: {fileID: 0}
   audioSource: {fileID: 2147473227}
   match: {fileID: 8300000, guid: 5c3b87e4b361c0c41a740eb3348a8e0e, type: 3}
+  correct: {fileID: 8300000, guid: 52320e590bf774734a288886eba557ba, type: 3}
+  incorrect: {fileID: 8300000, guid: 7bef0064f8567430cac22499c6b93d4f, type: 3}
 --- !u!4 &2147473226
 Transform:
   m_ObjectHideFlags: 0
