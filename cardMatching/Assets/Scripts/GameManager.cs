@@ -123,6 +123,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1.0f;
+        time = maxTime;
 
         InitGame(0);// 파라미터는 난이도
         ShuffleCard();

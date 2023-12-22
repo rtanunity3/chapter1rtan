@@ -847,12 +847,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d22c499efc9e44080466aad7fc1b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxTime: 30
+  paneltyTime: 0
   timeText: {fileID: 1386723397}
   endText: {fileID: 952272673}
   card: {fileID: 4890937525783362785, guid: 24d8c3595fb0f8c4dbd753dcf4c148a9, type: 3}
   firstCard: {fileID: 0}
   secondCard: {fileID: 0}
   audioSource: {fileID: 2147473227}
+  bgmSource: {fileID: 1688208144}
   match: {fileID: 8300000, guid: 5c3b87e4b361c0c41a740eb3348a8e0e, type: 3}
   correct: {fileID: 8300000, guid: 52320e590bf774734a288886eba557ba, type: 3}
   incorrect: {fileID: 8300000, guid: 7bef0064f8567430cac22499c6b93d4f, type: 3}
