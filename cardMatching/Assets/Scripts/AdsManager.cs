@@ -39,7 +39,6 @@ public class AdsManager : MonoBehaviour
 
     void ResultAds(ShowResult result)
     {
-        Debug.Log(result);
         switch (result)
         {
             case ShowResult.Failed:
