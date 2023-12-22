@@ -48,5 +48,9 @@ public class Card : MonoBehaviour
         anim.SetBool("isOpen", false);
         transform.Find("Back").gameObject.SetActive(true);
         transform.Find("Front").gameObject.SetActive(false);
+        // card 뒷면 회색으로 변경
+        transform.Find("Back").gameObject.GetComponent<SpriteRenderer>().color = Color.gray;
+        // card 앞면 회색으로 변경
+        transform.Find("Front/Front_Bg").gameObject.GetComponent<SpriteRenderer>().color = Color.gray;
     }
 }
