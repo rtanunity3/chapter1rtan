@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance;
-    public static GameManager Instance => instance ;
+    public static GameManager Instance => instance;
 
 
     [Header("■ Options")]
@@ -33,13 +33,20 @@ public class GameManager : MonoBehaviour
     public AudioClip correct;
     public AudioClip incorrect;
 
-   
+
 
     float time;
+    float effectTime; // 경고등 깜빡임을 조절하기 위한 시간
+
+    enum Difficulty { easy, normal, hard } // 난이도
+    List<int> rtans = new List<int>(); // 카드패
+    int gameScore;
+
+
 
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -53,6 +60,8 @@ public class GameManager : MonoBehaviour
     void InitGame(int difficulty)
     {
         int cardObjectCount = 16;
+        gameScore = 0;
+
         switch (difficulty)
         {
             case (int)Difficulty.easy:
@@ -71,17 +80,32 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        int[] rtans = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7 };
+
+        for (int i = 0; i < cardObjectCount / 2; i++)
+        {
+            rtans.Add(i);
+            rtans.Add(i);
+        }
+    }
+
+    void ShuffleCard()
+    {
+        Debug.Log("== Shuffle ==");
+        int cardCount = rtans.Count;
+        for (int i = 0; i < cardCount; i++)
+        {
+            // 위치 바꿀 자리 선택
+            int shuffleIndex = Random.Range(i, cardCount);
 
             // 위치 교환
             int tmp = rtans[shuffleIndex];
             rtans[shuffleIndex] = rtans[i];
             rtans[i] = tmp;
         }
-        rtans.ForEach(num => Debug.Log(num)); // console.log
     }
 
-    void GenCard() {
+    void GenCard()
+    {
         for (int i = 0; i < rtans.Count; i++)
         {
             GameObject newCard = Instantiate(card);
@@ -126,13 +150,13 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         time -= Time.deltaTime;
         timeText.text = time.ToString("N2");
 
         WarningUI();
 
-   
+
         if (time <= 0)                      // 시간이 0이 되었을때 게임이 끝나도록 변경
         {
             endText.SetActive(true);
@@ -180,8 +204,7 @@ public class GameManager : MonoBehaviour
 
     public void ReGame()
     {
-        // SceneManager.LoadScene("MainScene");
-        AdsManager.Instance.ShowRewardAd();
+        SceneManager.LoadScene("MainScene");
     }
 
     private void WarningUI()   // 시간이 촉박할때!
@@ -196,19 +219,19 @@ public class GameManager : MonoBehaviour
             bgmSource.pitch = 1.2f;
 
             effectTime += Time.deltaTime;
-            if(effectTime < 1f)
+            if (effectTime < 1f)
             {
                 timeText.color = new Color(1, 0, 0, 1 - effectTime);
             }
             else
             {
                 timeText.color = new Color(1, 0, 0, effectTime);
-                if(effectTime > 1f)
+                if (effectTime > 1f)
                 {
                     effectTime = 0f;
                 }
             }
-            
+
         }
 
     }
