@@ -58,6 +58,8 @@ public class GameManager : MonoBehaviour
     int row; // Row
     float scale; // Cards 오브젝트 스케일 변경 값
 
+    /**************************************************************/
+
 
     private void Awake()
     {
@@ -138,8 +140,10 @@ public class GameManager : MonoBehaviour
 
             float x = (i / col) * (float)(6.0 / row) - ((float)(6.0 / row) * (row - 1)) / 2;
             float y = (i % col) * (float)(8.0 / col) - ((float)(8.0 / col) * (col - 1)) / 2 - 1f;
+
             //newCard.transform.position = new Vector3(x, y, 0);
             StartCoroutine(SpiralEffect(newCard, 1f, new Vector3(x, y, 0)));
+            //newCard.transform.position = new Vector3(x, y, 0);
 
             string rtanName = "rtan" + rtans[i].ToString();
             newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
@@ -354,6 +358,7 @@ public class GameManager : MonoBehaviour
         // 이전기록 비교
         PlayerPrefs.SetInt("MaxScore", maxScore);
     }
+
     // 스트링에서 숫자만 추출
     public int ExtractNumber(string spriteName)
     {
