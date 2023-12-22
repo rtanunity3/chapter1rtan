@@ -25,7 +25,7 @@ public class AdsManager : MonoBehaviour
             gameId = "5505947";
         }
 
-        Advertisement.Initialize(gameId, true); // »ó¿ëÀº false·Î ¼¼ÆÃ. ÇÁ·ÎÁ§Æ® ¼¼ÆÃ¿¡¼­ Å×½ºÆ®¸ğµå off
+        Advertisement.Initialize(gameId, true); // ìƒìš©ì€ falseë¡œ ì„¸íŒ…. í”„ë¡œì íŠ¸ ì„¸íŒ…ì—ì„œ í…ŒìŠ¤íŠ¸ëª¨ë“œ off
     }
 
     public void ShowRewardAd()
@@ -43,13 +43,13 @@ public class AdsManager : MonoBehaviour
         switch (result)
         {
             case ShowResult.Failed:
-                Debug.LogError("±¤°í º¸±â¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+                Debug.LogError("ê´‘ê³  ë³´ê¸°ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
                 break;
             case ShowResult.Skipped:
-                Debug.Log("±¤°í¸¦ ½ºÅµÇß½À´Ï´Ù.");
+                Debug.Log("ê´‘ê³ ë¥¼ ìŠ¤í‚µí–ˆìŠµë‹ˆë‹¤.");
                 break;
             case ShowResult.Finished:
-                // ±¤°í º¸±â º¸»ó ±â´É 
+                // ê´‘ê³  ë³´ê¸° ë³´ìƒ ê¸°ëŠ¥ 
                 GameManager.Instance.ReGame();
                 break;
         }
