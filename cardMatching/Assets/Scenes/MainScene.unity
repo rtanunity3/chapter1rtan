@@ -174,7 +174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1686,7 +1686,7 @@ MonoBehaviour:
   nameTxt: {fileID: 135044210}
   endText: {fileID: 952272673}
   card: {fileID: 4890937525783362785, guid: 24d8c3595fb0f8c4dbd753dcf4c148a9, type: 3}
-  nextGameText: {fileID: 0}
+  nextGameText: {fileID: 771003831}
   firstCard: {fileID: 0}
   secondCard: {fileID: 0}
   audioSource: {fileID: 2147473227}
