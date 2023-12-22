@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 58874307}
   - component: {fileID: 58874306}
   m_Layer: 5
-  m_Name: Stage1 (1)
+  m_Name: Stage2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1086,7 +1086,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbd74d57ae0a8e84884cec5d8d5f309e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  select: {fileID: 0}
+  selects:
+  - {fileID: 652571060}
+  - {fileID: 58874304}
+  - {fileID: 2022453979}
 --- !u!4 &1296424878
 Transform:
   m_ObjectHideFlags: 0
@@ -1278,7 +1281,7 @@ GameObject:
   - component: {fileID: 2022453982}
   - component: {fileID: 2022453981}
   m_Layer: 5
-  m_Name: Stage1 (2)
+  m_Name: Stage3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
