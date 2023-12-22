@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     [Header("■ UI")]
     public Text timeText;
+    public Text nameTxt;
 
     [Header("■ Object")]
     public GameObject endText;
@@ -36,12 +38,13 @@ public class GameManager : MonoBehaviour
 
 
     float time;
+    float nameTime;
     float effectTime; // 경고등 깜빡임을 조절하기 위한 시간
 
     enum Difficulty { easy, normal, hard } // 난이도
     List<int> rtans = new List<int>(); // 카드패
     int gameScore;
-
+    string[] names = { "황문규", "황문규", "김관철", "김관철", "권순성", "이주환", "이주환", "김상민" };
 
 
     private void Awake()
@@ -167,6 +170,13 @@ public class GameManager : MonoBehaviour
             // 시간 종료 점수 계산 및 저장
 
         }
+
+        nameTime += Time.deltaTime;
+        if (nameTime >= 1f)
+        {
+            nameTxt.gameObject.SetActive(false);
+            nameTime = 0f;
+        }
     }
 
     public void IsMatched()
@@ -180,6 +190,14 @@ public class GameManager : MonoBehaviour
         {
             //audioSource.PlayOneShot(match);
             audioSource.PlayOneShot(correct);
+
+            nameTime = 0f;
+            // 텍스트 켜기
+            nameTxt.gameObject.SetActive(true);
+
+            // 스프라이트에서 번호 추출하여 해당하는 이름으로 세팅하기
+            nameTxt.text = names[ExtractNumber(firstCardImage)];
+
 
             firstCard.GetComponent<Card>().DestroyCard();
             secondCard.GetComponent<Card>().DestroyCard();
@@ -206,6 +224,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            nameTime = 0f;
+            // 텍스트 켜기
+            nameTxt.gameObject.SetActive(true);
+
+            nameTxt.text = "실패";
+
             audioSource.PlayOneShot(incorrect);
             firstCard.GetComponent<Card>().CloseCard();
             secondCard.GetComponent<Card>().CloseCard();
@@ -247,9 +271,29 @@ public class GameManager : MonoBehaviour
                     effectTime = 0f;
                 }
             }
+        }
+    }
 
+    // 스트링에서 숫자만 추출
+    public int ExtractNumber(string spriteName)
+    {
+        string numberString = "";
+
+        foreach (char c in spriteName)
+        {
+            if (char.IsDigit(c))
+            {
+                numberString += c;
+            }
         }
 
+        if (numberString.Length > 0)
+        {
+            return int.Parse(numberString);
+        }
+
+        return -1; // 혹은 적절한 오류 처리
     }
+
 
 }
