@@ -13,6 +13,6 @@ public class EndText : MonoBehaviour
     // 다음 스테이지 시작
     public void NextGame()
     {
-        SceneManager.LoadScene("LevelTestScene");
+        SceneManager.LoadScene("MainScene");
     }
 }
