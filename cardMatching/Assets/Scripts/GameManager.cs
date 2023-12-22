@@ -106,8 +106,7 @@ public class GameManager : MonoBehaviour
 
     public void ReGame()
     {
-        // SceneManager.LoadScene("MainScene");
-        AdsManager.Instance.ShowRewardAd();
+        SceneManager.LoadScene("MainScene");
     }
 
 }
