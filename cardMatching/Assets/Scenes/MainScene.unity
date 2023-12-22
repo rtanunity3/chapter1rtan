@@ -1677,7 +1677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d22c499efc9e44080466aad7fc1b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTime: 30
+  maxTime: 150
   paneltyTime: 0
   timeText: {fileID: 1386723397}
   highScoreText: {fileID: 1949710206}

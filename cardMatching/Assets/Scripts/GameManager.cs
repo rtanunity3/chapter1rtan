@@ -60,8 +60,7 @@ public class GameManager : MonoBehaviour
     int row; // Row
     float scale; // Cards 오브젝트 스케일 변경 값
 
-    /**************************************************************/
-
+    int level;
 
     private void Awake()
     {
@@ -157,7 +156,8 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
         time = maxTime;
 
-        InitGame(DataManager.Instance.level);// 파라미터는 난이도
+        level = DataManager.Instance.level;
+        InitGame(level);// 파라미터는 난이도
         ShuffleCard();
         GenCard();
 
@@ -260,9 +260,10 @@ public class GameManager : MonoBehaviour
             //if (cardsLeft == 2)
             if(correctCount == cardObjectCount / 2)
             {
-                if (DataManager.Instance.level < 2)
+
+                if(level < 2)
                 {
-                    DataManager.Instance.level++;
+                    PlayerPrefs.SetInt($"Unlock_{++DataManager.Instance.level}", 1);
                     nextGameText.SetActive(true);
                 }
                 else
@@ -301,7 +302,7 @@ public class GameManager : MonoBehaviour
 
     public void ReGame()
     {
-        SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene("StageSelectScene");
     }
 
     private void WarningUI()   // 시간이 촉박할때!
@@ -336,13 +337,15 @@ public class GameManager : MonoBehaviour
 
     void InitScore()
     {
-        if (!PlayerPrefs.HasKey("MaxScore"))
+        if (!PlayerPrefs.HasKey($"MaxScore_{level}"))
         {
             // 최고점수 기록이 없으면 초기화
-            PlayerPrefs.SetInt("MaxScore", 0);
+            PlayerPrefs.SetInt($"MaxScore_{level}", 0);
         }
 
-        maxScore = PlayerPrefs.GetInt("MaxScore");
+        Debug.Log(level + "의 최고 점수는 " + PlayerPrefs.GetInt($"MaxScore_{level}"));
+
+        maxScore = PlayerPrefs.GetInt($"MaxScore_{level}");
         curScore = 0;
         tryCount = 0;
         correctCount = 0;
@@ -361,7 +364,8 @@ public class GameManager : MonoBehaviour
             maxScore = curScore;
         }
         // 이전기록 비교
-        PlayerPrefs.SetInt("MaxScore", maxScore);
+        PlayerPrefs.SetInt($"MaxScore_{level}", maxScore);
+        Debug.Log(level + "의 최고 점수는 " + maxScore);
     }
 
     // 스트링에서 숫자만 추출
