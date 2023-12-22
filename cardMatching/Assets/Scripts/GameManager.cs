@@ -116,7 +116,9 @@ public class GameManager : MonoBehaviour
 
             float x = (i / 4) * 1.4f - 2.1f;
             float y = (i % 4) * 1.4f - 3.0f;
-            newCard.transform.position = new Vector3(x, y, 0);
+
+            StartCoroutine(SpiralEffect(newCard, 1f, new Vector3(x, y, 0)));
+            //newCard.transform.position = new Vector3(x, y, 0);
 
             string rtanName = "rtan" + rtans[i].ToString();
             newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
@@ -292,8 +294,29 @@ public class GameManager : MonoBehaviour
             return int.Parse(numberString);
         }
 
-        return -1; // 혹은 적절한 오류 처리
+        return -1;
     }
 
+    IEnumerator SpiralEffect(GameObject card, float duration, Vector3 endPosition)
+    {
+        float time = 0;
+        Vector3 startPosition = new Vector3(0, 0, 0);
 
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+
+            // 나선형 경로 계산
+            float theta = t * 2 * Mathf.PI; // 각도
+            float radius = (1 - t) * 5; // 반지름
+            Vector3 spiralPos = new Vector3(Mathf.Cos(theta) * radius, Mathf.Sin(theta) * radius, 0);
+
+            card.transform.position = Vector3.Lerp(startPosition + spiralPos, endPosition, t);
+
+            yield return null;
+        }
+
+        card.transform.position = endPosition;
+    }
 }
