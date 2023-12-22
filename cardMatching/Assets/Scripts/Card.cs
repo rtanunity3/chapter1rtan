@@ -48,6 +48,6 @@ public class Card : MonoBehaviour
         anim.SetBool("isOpen", false);
         transform.Find("Back").gameObject.SetActive(true);
         transform.Find("Front").gameObject.SetActive(false);
-        transform.Find("Back").gameObject.SetActive(false);
+        transform.Find("Back").gameObject.GetComponent<SpriteRenderer>().color = Color.gray;
     }
 }
