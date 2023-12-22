@@ -163,6 +163,9 @@ public class GameManager : MonoBehaviour
             endText.SetActive(true);
             bgmSource.Stop();
             Time.timeScale = 0.0f;
+
+            // 시간 종료 점수 계산 및 저장
+
         }
     }
 
@@ -171,6 +174,8 @@ public class GameManager : MonoBehaviour
         string firstCardImage = firstCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
         string secondCardImage = secondCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
 
+        // 매칭 시도 횟수 카운트
+
         if (firstCardImage == secondCardImage)
         {
             //audioSource.PlayOneShot(match);
@@ -178,6 +183,9 @@ public class GameManager : MonoBehaviour
 
             firstCard.GetComponent<Card>().DestroyCard();
             secondCard.GetComponent<Card>().DestroyCard();
+
+            // 맞춘 점수 +10
+            gameScore += 10;
 
             Card[] leftCards = GameObject.Find("Cards").transform.GetComponentsInChildren<Card>();
             foreach (Card card in leftCards)
@@ -190,6 +198,10 @@ public class GameManager : MonoBehaviour
             {
                 endText.SetActive(true);
                 Time.timeScale = 0.0f;
+
+                // 점수계산 및 저장
+                gameScore += Mathf.FloorToInt(maxTime - time) * 10;
+
             }
         }
         else
@@ -197,6 +209,9 @@ public class GameManager : MonoBehaviour
             audioSource.PlayOneShot(incorrect);
             firstCard.GetComponent<Card>().CloseCard();
             secondCard.GetComponent<Card>().CloseCard();
+
+            // 틀려서 감점 -1
+            gameScore -= 1;
         }
 
         firstCard = null;
