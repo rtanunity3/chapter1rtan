@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     int curScore;
     int tryCount;
 
-    string[] names = { "황문규", "황문규", "김관철", "김관철", "권순성", "이주환", "이주환", "김상민" };
+    string[] names = { "황문규", "황문규", "김관철", "김관철", "권순성", "권순성", "이주환", "이주환", "김상민", "김상민", "9조" };
 
 
     /**************************************************************/
@@ -256,7 +256,7 @@ public class GameManager : MonoBehaviour
             int cardsLeft = GameObject.Find("Cards").transform.childCount;
             if (cardsLeft == 2)
             {
-                if(DataManager.Instance.level < 2)
+                if (DataManager.Instance.level < 2)
                 {
                     DataManager.Instance.level++;
                     nextGameText.SetActive(true);
@@ -266,7 +266,7 @@ public class GameManager : MonoBehaviour
                     DataManager.Instance.level = 0;
                     endText.SetActive(true);
                 }
-                
+
                 Time.timeScale = 0.0f;
 
                 // 점수계산 및 저장
