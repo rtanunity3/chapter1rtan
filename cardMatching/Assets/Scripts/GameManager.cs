@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,11 +16,14 @@ public class GameManager : MonoBehaviour
 
     [Header("■ UI")]
     public Text timeText;
-    public Text nameTxt;
+    public Text highScoreText;
+    public Text curScoreText;
+    public Text curTryText;
 
     [Header("■ Object")]
     public GameObject endText;
     public GameObject card;
+    public GameObject nextGameText;
 
     public GameObject firstCard;
     public GameObject secondCard;
@@ -35,16 +37,22 @@ public class GameManager : MonoBehaviour
     public AudioClip correct;
     public AudioClip incorrect;
 
-
-
     float time;
-    float nameTime;
     float effectTime; // 경고등 깜빡임을 조절하기 위한 시간
+    int matchCount; // 매칭 횟수 저장
 
     enum Difficulty { easy, normal, hard } // 난이도
     List<int> rtans = new List<int>(); // 카드패
-    int gameScore;
-    string[] names = { "황문규", "황문규", "김관철", "김관철", "권순성", "이주환", "이주환", "김상민" };
+    int maxScore;
+    int curScore;
+    int tryCount;
+
+
+    /**************************************************************/
+    //레벨마다 필요한 변수
+    int col; // Column
+    int row; // Row
+    float scale; // Cards 오브젝트 스케일 변경 값
 
 
     private void Awake()
@@ -62,21 +70,31 @@ public class GameManager : MonoBehaviour
 
     void InitGame(int difficulty)
     {
+        InitScore();
         int cardObjectCount = 16;
-        gameScore = 0;
 
         switch (difficulty)
         {
             case (int)Difficulty.easy:
                 // 쉬움
+                cardObjectCount = 12;
+                col = 4;
+                row = 3;
+                scale = 1f;
                 break;
             case (int)Difficulty.normal:
-                cardObjectCount = 20;
+                cardObjectCount = 16;
                 // 보통
+                col = 4;
+                row = 4;
+                scale = 0.95f;
                 break;
             case (int)Difficulty.hard:
                 cardObjectCount = 24;
                 // 어려움
+                col = 6;
+                row = 4;
+                scale = 0.9f;
                 break;
             default:
                 // 에러
@@ -114,15 +132,14 @@ public class GameManager : MonoBehaviour
             GameObject newCard = Instantiate(card);
             newCard.transform.parent = GameObject.Find("Cards").transform;
 
-            float x = (i / 4) * 1.4f - 2.1f;
-            float y = (i % 4) * 1.4f - 3.0f;
-
-            StartCoroutine(SpiralEffect(newCard, 1f, new Vector3(x, y, 0)));
-            //newCard.transform.position = new Vector3(x, y, 0);
+            float x = (i / col) * (float)(6.0 / row) - ((float)(6.0 / row) * (row - 1)) / 2;
+            float y = (i % col) * (float)(8.0 / col) - ((float)(8.0 / col) * (col - 1)) / 2 - 1f;
+            newCard.transform.position = new Vector3(x, y, 0);
 
             string rtanName = "rtan" + rtans[i].ToString();
             newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
         }
+        GameObject.Find("Cards").transform.localScale = new Vector3(scale, scale, 1f);
     }
 
     void Start()
@@ -130,7 +147,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
         time = maxTime;
 
-        InitGame(0);// 파라미터는 난이도
+        InitGame(DataManager.Instance.level);// 파라미터는 난이도
         ShuffleCard();
         GenCard();
 
@@ -160,24 +177,26 @@ public class GameManager : MonoBehaviour
         time -= Time.deltaTime;
         timeText.text = time.ToString("N2");
 
+        if (maxScore < curScore)
+        {
+            maxScore = curScore;
+        }
+        highScoreText.text = maxScore.ToString();
+        curScoreText.text = curScore.ToString();
+        curTryText.text = tryCount.ToString();
+
         WarningUI();
 
 
         if (time <= 0)                      // 시간이 0이 되었을때 게임이 끝나도록 변경
         {
+            DataManager.Instance.level = 0;
             endText.SetActive(true);
             bgmSource.Stop();
             Time.timeScale = 0.0f;
 
             // 시간 종료 점수 계산 및 저장
-
-        }
-
-        nameTime += Time.deltaTime;
-        if (nameTime >= 1f)
-        {
-            nameTxt.gameObject.SetActive(false);
-            nameTime = 0f;
+            SaveScore();
         }
     }
 
@@ -187,25 +206,23 @@ public class GameManager : MonoBehaviour
         string secondCardImage = secondCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
 
         // 매칭 시도 횟수 카운트
+        tryCount++;
+        if (tryCount % 10 == 0)
+        {
+            // 시도 10회마다 -10점
+            curScore -= 5;
+        }
 
         if (firstCardImage == secondCardImage)
         {
             //audioSource.PlayOneShot(match);
             audioSource.PlayOneShot(correct);
 
-            nameTime = 0f;
-            // 텍스트 켜기
-            nameTxt.gameObject.SetActive(true);
-
-            // 스프라이트에서 번호 추출하여 해당하는 이름으로 세팅하기
-            nameTxt.text = names[ExtractNumber(firstCardImage)];
-
-
             firstCard.GetComponent<Card>().DestroyCard();
             secondCard.GetComponent<Card>().DestroyCard();
 
             // 맞춘 점수 +10
-            gameScore += 10;
+            curScore += 10;
 
             Card[] leftCards = GameObject.Find("Cards").transform.GetComponentsInChildren<Card>();
             foreach (Card card in leftCards)
@@ -216,28 +233,32 @@ public class GameManager : MonoBehaviour
             int cardsLeft = GameObject.Find("Cards").transform.childCount;
             if (cardsLeft == 2)
             {
-                endText.SetActive(true);
+                if(DataManager.Instance.level < 2)
+                {
+                    DataManager.Instance.level++;
+                    nextGameText.SetActive(true);
+                }
+                else
+                {
+                    DataManager.Instance.level = 0;
+                    endText.SetActive(true);
+                }
+                
                 Time.timeScale = 0.0f;
 
                 // 점수계산 및 저장
-                gameScore += Mathf.FloorToInt(maxTime - time) * 10;
-
+                curScore += Mathf.FloorToInt(time * 10);
+                SaveScore();
             }
         }
         else
         {
-            nameTime = 0f;
-            // 텍스트 켜기
-            nameTxt.gameObject.SetActive(true);
-
-            nameTxt.text = "실패";
-
             audioSource.PlayOneShot(incorrect);
             firstCard.GetComponent<Card>().CloseCard();
             secondCard.GetComponent<Card>().CloseCard();
 
             // 틀려서 감점 -1
-            gameScore -= 1;
+            curScore -= 1;
         }
 
         firstCard = null;
@@ -273,50 +294,40 @@ public class GameManager : MonoBehaviour
                     effectTime = 0f;
                 }
             }
+
         }
+
     }
 
-    // 스트링에서 숫자만 추출
-    public int ExtractNumber(string spriteName)
+
+    void InitScore()
     {
-        string numberString = "";
-
-        foreach (char c in spriteName)
+        if (!PlayerPrefs.HasKey("MaxScore"))
         {
-            if (char.IsDigit(c))
-            {
-                numberString += c;
-            }
+            // 최고점수 기록이 없으면 초기화
+            PlayerPrefs.SetInt("MaxScore", 0);
         }
 
-        if (numberString.Length > 0)
-        {
-            return int.Parse(numberString);
-        }
+        maxScore = PlayerPrefs.GetInt("MaxScore");
+        curScore = 0;
+        tryCount = 0;
 
-        return -1;
+        highScoreText.text = maxScore.ToString();
+        curScoreText.text = curScore.ToString();
+        curTryText.text = tryCount.ToString();
     }
 
-    IEnumerator SpiralEffect(GameObject card, float duration, Vector3 endPosition)
+
+    void SaveScore()
     {
-        float time = 0;
-        Vector3 startPosition = new Vector3(0, 0, 0);
-
-        while (time < duration)
+        //한번 더 검증 후 저장
+        if (maxScore < curScore)
         {
-            time += Time.deltaTime;
-            float t = time / duration;
-
-            // 나선형 경로 계산
-            float theta = t * 2 * Mathf.PI; // 각도
-            float radius = (1 - t) * 5; // 반지름
-            Vector3 spiralPos = new Vector3(Mathf.Cos(theta) * radius, Mathf.Sin(theta) * radius, 0);
-
-            card.transform.position = Vector3.Lerp(startPosition + spiralPos, endPosition, t);
-
-            yield return null;
+            maxScore = curScore;
         }
-
-        card.transform.position = endPosition;
+        // 이전기록 비교
+        PlayerPrefs.SetInt("MaxScore", maxScore);
     }
+
 }
+
