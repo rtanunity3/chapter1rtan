@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class EndText : MonoBehaviour
+public class StageSelect : MonoBehaviour
 {
-    public void ReGame()
-    {
-        AdsManager.Instance.ShowRewardAd();
-    }
 
-    // 다음 스테이지 시작
-    public void NextGame()
+    public void startSelectedStage(int stageIndex)
     {
+        DataManager.Instance.level = stageIndex;
         SceneManager.LoadScene("LevelTestScene");
     }
 }
