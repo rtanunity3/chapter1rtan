@@ -238,7 +238,7 @@ public class GameManager : MonoBehaviour
             {
                 if(level < 2)
                 {
-                    DataManager.Instance.level++;
+                    PlayerPrefs.SetInt($"Unlock_{++DataManager.Instance.level}", 1);
                     nextGameText.SetActive(true);
                 }
                 else
@@ -270,7 +270,7 @@ public class GameManager : MonoBehaviour
 
     public void ReGame()
     {
-        SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene("StageSelectScene");
     }
 
     private void WarningUI()   // 시간이 촉박할때!
