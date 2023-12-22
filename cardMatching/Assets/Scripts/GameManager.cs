@@ -253,6 +253,7 @@ public class GameManager : MonoBehaviour
             foreach (Card card in leftCards)
             {
                 card.transform.Find("Back").GetComponent<SpriteRenderer>().color = Color.white;
+                card.transform.Find("Front/Front_Bg").GetComponent<SpriteRenderer>().color = Color.white;
             }
 
             //int cardsLeft = GameObject.Find("Cards").transform.childCount;
