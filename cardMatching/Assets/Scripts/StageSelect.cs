@@ -17,6 +17,6 @@ public class StageSelect : MonoBehaviour
     public void startSelectedStage(int stageIndex)
     {
         DataManager.Instance.level = stageIndex;
-        SceneManager.LoadScene("LevelTestScene");
+        SceneManager.LoadScene("MainScene");
     }
 }
