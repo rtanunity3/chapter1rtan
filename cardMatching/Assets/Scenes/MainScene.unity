@@ -894,6 +894,7 @@ GameObject:
   - component: {fileID: 1386723396}
   - component: {fileID: 1386723398}
   - component: {fileID: 1386723397}
+  - component: {fileID: 1386723399}
   m_Layer: 5
   m_Name: TimeText
   m_TagString: Untagged
@@ -945,8 +946,8 @@ MonoBehaviour:
     m_FontSize: 70
     m_FontStyle: 1
     m_BestFit: 0
-    m_MinSize: 7
-    m_MaxSize: 70
+    m_MinSize: 0
+    m_MaxSize: 80
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -962,6 +963,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1386723395}
   m_CullTransparentMesh: 1
+--- !u!95 &1386723399
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386723395}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: aa256cb060bb65940a7f70566917d577, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1511820736
 GameObject:
   m_ObjectHideFlags: 0
