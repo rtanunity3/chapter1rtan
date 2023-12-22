@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public Text highScoreText;
     public Text curScoreText;
     public Text curTryText;
+    public Text nameTxt;
 
     [Header("■ Object")]
     public GameObject endText;
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
     public AudioClip incorrect;
 
     float time;
+    float nameTime;
     float effectTime; // 경고등 깜빡임을 조절하기 위한 시간
     int matchCount; // 매칭 횟수 저장
 
@@ -47,12 +49,16 @@ public class GameManager : MonoBehaviour
     int curScore;
     int tryCount;
 
+    string[] names = { "황문규", "황문규", "김관철", "김관철", "권순성", "이주환", "이주환", "김상민" };
+
 
     /**************************************************************/
     //레벨마다 필요한 변수
     int col; // Column
     int row; // Row
     float scale; // Cards 오브젝트 스케일 변경 값
+
+    /**************************************************************/
 
 
     private void Awake()
@@ -134,7 +140,10 @@ public class GameManager : MonoBehaviour
 
             float x = (i / col) * (float)(6.0 / row) - ((float)(6.0 / row) * (row - 1)) / 2;
             float y = (i % col) * (float)(8.0 / col) - ((float)(8.0 / col) * (col - 1)) / 2 - 1f;
-            newCard.transform.position = new Vector3(x, y, 0);
+
+            //newCard.transform.position = new Vector3(x, y, 0);
+            StartCoroutine(SpiralEffect(newCard, 1f, new Vector3(x, y, 0)));
+            //newCard.transform.position = new Vector3(x, y, 0);
 
             string rtanName = "rtan" + rtans[i].ToString();
             newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
@@ -198,6 +207,13 @@ public class GameManager : MonoBehaviour
             // 시간 종료 점수 계산 및 저장
             SaveScore();
         }
+
+        nameTime += Time.deltaTime;
+        if (nameTime >= 1f)
+        {
+            nameTxt.gameObject.SetActive(false);
+            nameTime = 0f;
+        }
     }
 
     public void IsMatched()
@@ -217,6 +233,13 @@ public class GameManager : MonoBehaviour
         {
             //audioSource.PlayOneShot(match);
             audioSource.PlayOneShot(correct);
+
+            nameTime = 0f;
+            // 텍스트 켜기
+            nameTxt.gameObject.SetActive(true);
+
+            // 스프라이트에서 번호 추출하여 해당하는 이름으로 세팅하기
+            nameTxt.text = names[ExtractNumber(firstCardImage)];
 
             firstCard.GetComponent<Card>().DestroyCard();
             secondCard.GetComponent<Card>().DestroyCard();
@@ -247,12 +270,19 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0.0f;
 
                 // 점수계산 및 저장
+                //gameScore += Mathf.FloorToInt(maxTime - time) * 10;
                 curScore += Mathf.FloorToInt(time * 10);
                 SaveScore();
             }
         }
         else
         {
+            nameTime = 0f;
+            // 텍스트 켜기
+            nameTxt.gameObject.SetActive(true);
+
+            nameTxt.text = "실패";
+
             audioSource.PlayOneShot(incorrect);
             firstCard.GetComponent<Card>().CloseCard();
             secondCard.GetComponent<Card>().CloseCard();
@@ -329,5 +359,48 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("MaxScore", maxScore);
     }
 
+    // 스트링에서 숫자만 추출
+    public int ExtractNumber(string spriteName)
+    {
+        string numberString = "";
+
+        foreach (char c in spriteName)
+        {
+            if (char.IsDigit(c))
+            {
+                numberString += c;
+            }
+        }
+
+        if (numberString.Length > 0)
+        {
+            return int.Parse(numberString);
+        }
+
+        return -1;
+    }
+
+    IEnumerator SpiralEffect(GameObject card, float duration, Vector3 endPosition)
+    {
+        float time = 0;
+        Vector3 startPosition = new Vector3(0, 0, 0);
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+
+            // 나선형 경로 계산
+            float theta = t * 2 * Mathf.PI; // 각도
+            float radius = (1 - t) * 5; // 반지름
+            Vector3 spiralPos = new Vector3(Mathf.Cos(theta) * radius, Mathf.Sin(theta) * radius, 0);
+
+            card.transform.position = Vector3.Lerp(startPosition + spiralPos, endPosition, t);
+
+            yield return null;
+        }
+
+        card.transform.position = endPosition;
+    }
 }
 
