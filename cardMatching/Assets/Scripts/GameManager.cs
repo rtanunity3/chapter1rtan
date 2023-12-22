@@ -16,9 +16,6 @@ public class GameManager : MonoBehaviour
 
     [Header("■ UI")]
     public Text timeText;
-    public Text highScoreText;
-    public Text curScoreText;
-    public Text curTryText;
 
     [Header("■ Object")]
     public GameObject endText;
@@ -43,9 +40,7 @@ public class GameManager : MonoBehaviour
 
     enum Difficulty { easy, normal, hard } // 난이도
     List<int> rtans = new List<int>(); // 카드패
-    int maxScore;
-    int curScore;
-    int tryCount;
+    int gameScore;
 
 
 
@@ -64,8 +59,8 @@ public class GameManager : MonoBehaviour
 
     void InitGame(int difficulty)
     {
-        InitScore();
         int cardObjectCount = 16;
+        gameScore = 0;
 
         switch (difficulty)
         {
@@ -160,14 +155,6 @@ public class GameManager : MonoBehaviour
         time -= Time.deltaTime;
         timeText.text = time.ToString("N2");
 
-        if (maxScore < curScore)
-        {
-            maxScore = curScore;
-        }
-        highScoreText.text = maxScore.ToString();
-        curScoreText.text = curScore.ToString();
-        curTryText.text = tryCount.ToString();
-
         WarningUI();
 
 
@@ -178,7 +165,7 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0.0f;
 
             // 시간 종료 점수 계산 및 저장
-            SaveScore();
+
         }
     }
 
@@ -188,13 +175,6 @@ public class GameManager : MonoBehaviour
         string secondCardImage = secondCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
 
         // 매칭 시도 횟수 카운트
-        tryCount++;
-        if (tryCount % 10 == 0)
-        {
-            // 시도 10회마다 -10점
-            curScore -= 5;
-        }
-
 
         if (firstCardImage == secondCardImage)
         {
@@ -205,7 +185,7 @@ public class GameManager : MonoBehaviour
             secondCard.GetComponent<Card>().DestroyCard();
 
             // 맞춘 점수 +10
-            curScore += 10;
+            gameScore += 10;
 
             Card[] leftCards = GameObject.Find("Cards").transform.GetComponentsInChildren<Card>();
             foreach (Card card in leftCards)
@@ -220,8 +200,8 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0.0f;
 
                 // 점수계산 및 저장
-                curScore += Mathf.FloorToInt(time * 10);
-                SaveScore();
+                gameScore += Mathf.FloorToInt(maxTime - time) * 10;
+
             }
         }
         else
@@ -231,7 +211,7 @@ public class GameManager : MonoBehaviour
             secondCard.GetComponent<Card>().CloseCard();
 
             // 틀려서 감점 -1
-            curScore -= 1;
+            gameScore -= 1;
         }
 
         firstCard = null;
@@ -272,35 +252,4 @@ public class GameManager : MonoBehaviour
 
     }
 
-
-    void InitScore()
-    {
-        if (!PlayerPrefs.HasKey("MaxScore"))
-        {
-            // 최고점수 기록이 없으면 초기화
-            PlayerPrefs.SetInt("MaxScore", 0);
-        }
-
-        maxScore = PlayerPrefs.GetInt("MaxScore");
-        curScore = 0;
-        tryCount = 0;
-
-        highScoreText.text = maxScore.ToString();
-        curScoreText.text = curScore.ToString();
-        curTryText.text = tryCount.ToString();
-    }
-
-
-    void SaveScore()
-    {
-        //한번 더 검증 후 저장
-        if (maxScore < curScore)
-        {
-            maxScore = curScore;
-        }
-        // 이전기록 비교
-        PlayerPrefs.SetInt("MaxScore", maxScore);
-    }
-
 }
-
