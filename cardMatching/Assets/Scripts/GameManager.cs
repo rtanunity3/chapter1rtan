@@ -48,6 +48,8 @@ public class GameManager : MonoBehaviour
     int maxScore;
     int curScore;
     int tryCount;
+    int correctCount;
+    int cardObjectCount = 16;
 
     string[] names = { "황문규", "황문규", "김관철", "김관철", "권순성", "이주환", "이주환", "김상민" };
 
@@ -77,7 +79,6 @@ public class GameManager : MonoBehaviour
     void InitGame(int difficulty)
     {
         InitScore();
-        int cardObjectCount = 16;
 
         switch (difficulty)
         {
@@ -246,6 +247,7 @@ public class GameManager : MonoBehaviour
 
             // 맞춘 점수 +10
             curScore += 10;
+            correctCount++;
 
             Card[] leftCards = GameObject.Find("Cards").transform.GetComponentsInChildren<Card>();
             foreach (Card card in leftCards)
@@ -253,8 +255,9 @@ public class GameManager : MonoBehaviour
                 card.transform.Find("Back").GetComponent<SpriteRenderer>().color = Color.white;
             }
 
-            int cardsLeft = GameObject.Find("Cards").transform.childCount;
-            if (cardsLeft == 2)
+            //int cardsLeft = GameObject.Find("Cards").transform.childCount;
+            //if (cardsLeft == 2)
+            if(correctCount == cardObjectCount / 2)
             {
                 if(DataManager.Instance.level < 2)
                 {
@@ -341,6 +344,7 @@ public class GameManager : MonoBehaviour
         maxScore = PlayerPrefs.GetInt("MaxScore");
         curScore = 0;
         tryCount = 0;
+        correctCount = 0;
 
         highScoreText.text = maxScore.ToString();
         curScoreText.text = curScore.ToString();
