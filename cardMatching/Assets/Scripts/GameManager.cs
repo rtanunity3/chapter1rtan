@@ -247,6 +247,7 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0.0f;
 
                 // 점수계산 및 저장
+                //gameScore += Mathf.FloorToInt(maxTime - time) * 10;
                 curScore += Mathf.FloorToInt(time * 10);
                 SaveScore();
             }
