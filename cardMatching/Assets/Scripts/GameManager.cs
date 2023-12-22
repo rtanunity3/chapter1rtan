@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
 
     [Header("■ UI")]
     public Text timeText;
-    public Text matchCountText; // 매칭 횟수 출력 Text
 
     [Header("■ Object")]
     public GameObject endText;
@@ -192,9 +191,6 @@ public class GameManager : MonoBehaviour
     {
         string firstCardImage = firstCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
         string secondCardImage = secondCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
-
-        // 매칭 시도 횟수 카운트
-        matchCountText.text = (++matchCount).ToString();
 
         if (firstCardImage == secondCardImage)
         {
