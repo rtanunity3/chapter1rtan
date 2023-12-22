@@ -16,10 +16,12 @@ public class GameManager : MonoBehaviour
 
     [Header("■ UI")]
     public Text timeText;
+    public Text matchCountText; // 매칭 횟수 출력 Text
 
     [Header("■ Object")]
     public GameObject endText;
     public GameObject card;
+    public GameObject nextGameText;
 
     public GameObject firstCard;
     public GameObject secondCard;
@@ -33,15 +35,20 @@ public class GameManager : MonoBehaviour
     public AudioClip correct;
     public AudioClip incorrect;
 
-
-
     float time;
     float effectTime; // 경고등 깜빡임을 조절하기 위한 시간
+    int matchCount; // 매칭 횟수 저장
 
     enum Difficulty { easy, normal, hard } // 난이도
     List<int> rtans = new List<int>(); // 카드패
     int gameScore;
 
+
+    /**************************************************************/
+    //레벨마다 필요한 변수
+    int col; // Column
+    int row; // Row
+    float scale; // Cards 오브젝트 스케일 변경 값
 
 
     private void Awake()
@@ -66,14 +73,24 @@ public class GameManager : MonoBehaviour
         {
             case (int)Difficulty.easy:
                 // 쉬움
+                cardObjectCount = 12;
+                col = 4;
+                row = 3;
+                scale = 1f;
                 break;
             case (int)Difficulty.normal:
-                cardObjectCount = 20;
+                cardObjectCount = 16;
                 // 보통
+                col = 4;
+                row = 4;
+                scale = 0.95f;
                 break;
             case (int)Difficulty.hard:
                 cardObjectCount = 24;
                 // 어려움
+                col = 6;
+                row = 4;
+                scale = 0.9f;
                 break;
             default:
                 // 에러
@@ -111,13 +128,14 @@ public class GameManager : MonoBehaviour
             GameObject newCard = Instantiate(card);
             newCard.transform.parent = GameObject.Find("Cards").transform;
 
-            float x = (i / 4) * 1.4f - 2.1f;
-            float y = (i % 4) * 1.4f - 3.0f;
+            float x = (i / col) * (float)(6.0 / row) - ((float)(6.0 / row) * (row - 1)) / 2;
+            float y = (i % col) * (float)(8.0 / col) - ((float)(8.0 / col) * (col - 1)) / 2 - 1f;
             newCard.transform.position = new Vector3(x, y, 0);
 
             string rtanName = "rtan" + rtans[i].ToString();
             newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
         }
+        GameObject.Find("Cards").transform.localScale = new Vector3(scale, scale, 1f);
     }
 
     void Start()
@@ -125,7 +143,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
         time = maxTime;
 
-        InitGame(0);// 파라미터는 난이도
+        InitGame(DataManager.Instance.level);// 파라미터는 난이도
         ShuffleCard();
         GenCard();
 
@@ -160,6 +178,7 @@ public class GameManager : MonoBehaviour
 
         if (time <= 0)                      // 시간이 0이 되었을때 게임이 끝나도록 변경
         {
+            DataManager.Instance.level = 0;
             endText.SetActive(true);
             bgmSource.Stop();
             Time.timeScale = 0.0f;
@@ -175,6 +194,7 @@ public class GameManager : MonoBehaviour
         string secondCardImage = secondCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite.name;
 
         // 매칭 시도 횟수 카운트
+        matchCountText.text = (++matchCount).ToString();
 
         if (firstCardImage == secondCardImage)
         {
@@ -196,12 +216,21 @@ public class GameManager : MonoBehaviour
             int cardsLeft = GameObject.Find("Cards").transform.childCount;
             if (cardsLeft == 2)
             {
-                endText.SetActive(true);
+                if(DataManager.Instance.level < 2)
+                {
+                    DataManager.Instance.level++;
+                    nextGameText.SetActive(true);
+                }
+                else
+                {
+                    DataManager.Instance.level = 0;
+                    endText.SetActive(true);
+                }
+                
                 Time.timeScale = 0.0f;
 
                 // 점수계산 및 저장
                 gameScore += Mathf.FloorToInt(maxTime - time) * 10;
-
             }
         }
         else
