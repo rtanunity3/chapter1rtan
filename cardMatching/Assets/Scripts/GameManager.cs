@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -38,7 +36,7 @@ public class GameManager : MonoBehaviour
    
 
     float time;
-    float effectTime; // 경고등 깜빡임을 조절하기 위한 시간
+
     private void Awake()
     {
         if(instance == null)
@@ -52,18 +50,39 @@ public class GameManager : MonoBehaviour
     }
 
 
-    void Start()
+    void InitGame(int difficulty)
     {
-        Time.timeScale = 1.0f;
-
-        time = maxTime;
+        int cardObjectCount = 16;
+        switch (difficulty)
+        {
+            case (int)Difficulty.easy:
+                // 쉬움
+                break;
+            case (int)Difficulty.normal:
+                cardObjectCount = 20;
+                // 보통
+                break;
+            case (int)Difficulty.hard:
+                cardObjectCount = 24;
+                // 어려움
+                break;
+            default:
+                // 에러
+                break;
+        }
 
         int[] rtans = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7 };
 
-        rtans = rtans.OrderBy(x => Random.Range(-1.0f, 1.0f)).ToArray();
+            // 위치 교환
+            int tmp = rtans[shuffleIndex];
+            rtans[shuffleIndex] = rtans[i];
+            rtans[i] = tmp;
+        }
+        rtans.ForEach(num => Debug.Log(num)); // console.log
+    }
 
-        // 카드 생성
-        for (int i = 0; i < 16; i++)
+    void GenCard() {
+        for (int i = 0; i < rtans.Count; i++)
         {
             GameObject newCard = Instantiate(card);
             newCard.transform.parent = GameObject.Find("Cards").transform;
@@ -75,6 +94,32 @@ public class GameManager : MonoBehaviour
             string rtanName = "rtan" + rtans[i].ToString();
             newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
         }
+    }
+
+    void Start()
+    {
+        Time.timeScale = 1.0f;
+
+        InitGame(0);// 파라미터는 난이도
+        ShuffleCard();
+        GenCard();
+
+        //int[] rtans = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7 };
+        //rtans = rtans.OrderBy(x => Random.Range(-1.0f, 1.0f)).ToArray();
+
+        // 카드 생성
+        //for (int i = 0; i < 16; i++)
+        //{
+        //    GameObject newCard = Instantiate(card);
+        //    newCard.transform.parent = GameObject.Find("Cards").transform;
+
+        //    float x = (i / 4) * 1.4f - 2.1f;
+        //    float y = (i % 4) * 1.4f - 3.0f;
+        //    newCard.transform.position = new Vector3(x, y, 0);
+
+        //    string rtanName = "rtan" + rtans[i].ToString();
+        //    newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
+        //}
 
     }
 
@@ -135,7 +180,7 @@ public class GameManager : MonoBehaviour
 
     public void ReGame()
     {
-         //SceneManager.LoadScene("MainScene");
+        // SceneManager.LoadScene("MainScene");
         AdsManager.Instance.ShowRewardAd();
     }
 
