@@ -255,6 +255,7 @@ MonoBehaviour:
   anim: {fileID: 8142653555900332908}
   flip: {fileID: 8300000, guid: badb633c77c0fa3459f08ed11b25dce7, type: 3}
   audioSource: {fileID: 1987853110094411664}
+  matchParticle: {fileID: 4755525511210484023, guid: 1c46be2d4150600448e9ebaf5c090356, type: 3}
 --- !u!114 &-6682569282600350928
 MonoBehaviour:
   m_ObjectHideFlags: 0
