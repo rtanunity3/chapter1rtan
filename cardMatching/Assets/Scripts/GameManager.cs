@@ -20,11 +20,13 @@ public class GameManager : MonoBehaviour
     public Text curScoreText;
     public Text curTryText;
     public Text nameTxt;
+    public Text resultText;
 
     [Header("■ Object")]
     public GameObject endText;
     public GameObject card;
     public GameObject nextGameText;
+    public GameObject resultPanel;
 
     public GameObject firstCard;
     public GameObject secondCard;
@@ -161,27 +163,8 @@ public class GameManager : MonoBehaviour
         InitGame(level);// 파라미터는 난이도
         ShuffleCard();
         GenCard();
-
-        //int[] rtans = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7 };
-        //rtans = rtans.OrderBy(x => Random.Range(-1.0f, 1.0f)).ToArray();
-
-        // 카드 생성
-        //for (int i = 0; i < 16; i++)
-        //{
-        //    GameObject newCard = Instantiate(card);
-        //    newCard.transform.parent = GameObject.Find("Cards").transform;
-
-        //    float x = (i / 4) * 1.4f - 2.1f;
-        //    float y = (i % 4) * 1.4f - 3.0f;
-        //    newCard.transform.position = new Vector3(x, y, 0);
-
-        //    string rtanName = "rtan" + rtans[i].ToString();
-        //    newCard.transform.Find("Front").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(rtanName);
-        //}
-
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -259,9 +242,9 @@ public class GameManager : MonoBehaviour
 
             //int cardsLeft = GameObject.Find("Cards").transform.childCount;
             //if (cardsLeft == 2)
-            if(correctCount == cardObjectCount / 2)
+            if (correctCount == cardObjectCount / 2)
             {
-                if(level < 2)
+                if (level < 2)
                 {
                     PlayerPrefs.SetInt($"Unlock_{++DataManager.Instance.level}", 1);
                     nextGameText.SetActive(true);
@@ -275,7 +258,6 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0.0f;
 
                 // 점수계산 및 저장
-                //gameScore += Mathf.FloorToInt(maxTime - time) * 10;
                 curScore += Mathf.FloorToInt(time * 10);
                 SaveScore();
             }
@@ -355,6 +337,7 @@ public class GameManager : MonoBehaviour
         highScoreText.text = maxScore.ToString();
         curScoreText.text = curScore.ToString();
         curTryText.text = tryCount.ToString();
+
     }
 
 
@@ -368,6 +351,10 @@ public class GameManager : MonoBehaviour
         // 이전기록 비교
         PlayerPrefs.SetInt($"MaxScore_{level}", maxScore);
         Debug.Log(level + "의 최고 점수는 " + maxScore);
+
+        // 결과 점수 표기
+        resultText.text = string.Format("결과\n시도횟수 : {0}\n맞춘횟수 : {1}\n남은시간: {2:f2}\n최종점수: {3}", tryCount, correctCount, time, curScore);
+        resultPanel.SetActive(true);
     }
 
     // 스트링에서 숫자만 추출
@@ -416,19 +403,19 @@ public class GameManager : MonoBehaviour
 
     private void FirstCardClose()
     {
-        if(firstCard != null)
+        if (firstCard != null)
         {
-            
+
             limitTime += Time.deltaTime;
-            if(limitTime >= 5)
-            { 
+            if (limitTime >= 5)
+            {
                 firstCard.GetComponent<Card>().FirstCardClose();
                 firstCard = null;
                 limitTime = 0;
             }
-            
+
         }
-        else if(firstCard == null)
+        else if (firstCard == null)
         {
             limitTime = 0f;
         }
