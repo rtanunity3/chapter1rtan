@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     public AudioClip incorrect;
 
     float time;
+    float limitTime;
     float nameTime;
     float effectTime; // 경고등 깜빡임을 조절하기 위한 시간
     int matchCount; // 매칭 횟수 저장
@@ -197,7 +198,7 @@ public class GameManager : MonoBehaviour
         curTryText.text = tryCount.ToString();
 
         WarningUI();
-
+        FirstCardClose();
 
         if (time <= 0)                      // 시간이 0이 되었을때 게임이 끝나도록 변경
         {
@@ -411,6 +412,26 @@ public class GameManager : MonoBehaviour
         }
 
         card.transform.position = endPosition;
+    }
+
+    private void FirstCardClose()
+    {
+        if(firstCard != null)
+        {
+            
+            limitTime += Time.deltaTime;
+            if(limitTime >= 5)
+            { 
+                firstCard.GetComponent<Card>().FirstCardClose();
+                firstCard = null;
+                limitTime = 0;
+            }
+            
+        }
+        else if(firstCard == null)
+        {
+            limitTime = 0f;
+        }
     }
 }
 
