@@ -11,7 +11,6 @@ public class StageSelect : MonoBehaviour
 
     private void Start()
     {
-
         InitBestScore();
         InitSelectButton();
     }
