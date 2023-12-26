@@ -282,6 +282,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            time -= paneltyTime; // 카드 매치 실패시 시간 감소
+
             nameTime = 0f;
             // 텍스트 켜기
             nameTxt.gameObject.SetActive(true);
