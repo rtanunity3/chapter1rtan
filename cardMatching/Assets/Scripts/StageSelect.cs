@@ -11,22 +11,58 @@ public class StageSelect : MonoBehaviour
 
     private void Start()
     {
+        InitBestScore();
+        InitSelectButton();
+    }
 
+    private void InitBestScore()
+    {
         for (int i = 0; i < selects.Length; i++)
         {
             if (!PlayerPrefs.HasKey($"MaxScore_{i}"))
             {
-                // ÃÖ°íÁ¡¼ö ±â·ÏÀÌ ¾øÀ¸¸é ÃÊ±âÈ­
-                PlayerPrefs.SetInt($"MaxScore_{i}", i);
+                // ìµœê³ ì ìˆ˜ ê¸°ë¡ì´ ì—†ìœ¼ë©´ ì´ˆê¸°í™”
+                PlayerPrefs.SetInt($"MaxScore_{i}", 0);
             }
             selects[i].transform.Find("BestScoreText").GetComponent<Text>().text = PlayerPrefs.GetInt($"MaxScore_{i}").ToString();
         }
     }
 
-    // ½ºÅ×ÀÌÁö ¼±ÅÃ ½Ã ÇØ´ç ½ºÅ×ÀÌÁö¿¡¼­ ½ÃÀÛ
+    private void InitSelectButton()
+    {
+        for (int i = 0; i < selects.Length; i++)
+        {
+            if (!PlayerPrefs.HasKey($"Unlock_{i}"))
+            {
+                if(i == 0)
+                {
+                    PlayerPrefs.SetInt($"Unlock_{i}", 1);
+                }
+                else
+                {
+                    // ìµœê³ ì ìˆ˜ ê¸°ë¡ì´ ì—†ìœ¼ë©´ ì´ˆê¸°í™”
+                    PlayerPrefs.SetInt($"Unlock_{i}", 0);
+                }
+                    
+            }
+            
+            if(PlayerPrefs.GetInt($"Unlock_{i}") == 0)
+            {
+                selects[i].transform.GetComponent<Button>().interactable = false;
+                selects[i].transform.Find("LockImage").gameObject.SetActive(true);
+            }
+            else
+            {
+                selects[i].transform.GetComponent<Button>().interactable = true;
+                selects[i].transform.Find("LockImage").gameObject.SetActive(false);
+            }
+        }
+    }
+
+    // ìŠ¤í…Œì´ì§€ ì„ íƒ ì‹œ í•´ë‹¹ ìŠ¤í…Œì´ì§€ì—ì„œ ì‹œì‘
     public void startSelectedStage(int stageIndex)
     {
         DataManager.Instance.level = stageIndex;
-        SceneManager.LoadScene("LevelTestScene");
+        SceneManager.LoadScene("MainScene");
     }
 }
