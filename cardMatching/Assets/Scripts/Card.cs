@@ -7,6 +7,7 @@ public class Card : MonoBehaviour
     public Animator anim;
     public AudioClip flip;
     public AudioSource audioSource;
+    public GameObject matchParticle;
 
     public void OpenCard()
     {
@@ -30,12 +31,19 @@ public class Card : MonoBehaviour
 
     public void DestroyCard()
     {
+        anim.SetBool("isMatch", true);
+        if(matchParticle != null) { 
+            GameObject GO = Instantiate(matchParticle, transform.position, Quaternion.identity);
+            GO.transform.parent = transform;
+        }
+        
         Invoke(nameof(DestroyCardInvoke), 1.0f);
     }
 
     void DestroyCardInvoke()
     {
         Destroy(gameObject);
+        
     }
 
     public void CloseCard()
