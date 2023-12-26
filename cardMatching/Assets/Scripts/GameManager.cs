@@ -297,7 +297,6 @@ public class GameManager : MonoBehaviour
 
             // 틀려서 감점 -1
             curScore -= 1;
-            time -= paneltyTime;
         }
 
         firstCard = null;
